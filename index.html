@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F2F4F6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111114" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="나만의 AI비서">
+<meta name="mobile-web-app-capable" content="yes">
+<title>나만의 AI비서</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--bg:#F2F4F6;--card:#fff;--tx:#191F28;--sub:#6B7684;--blue:#3182F6}
+@media (prefers-color-scheme:dark){:root{--bg:#111114;--card:#1D1D22;--tx:#F2F4F6;--sub:#8B95A1}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font-family:'Pretendard Variable',Pretendard,-apple-system,system-ui,sans-serif;overflow:hidden;overscroll-behavior:none}
+#app{position:fixed;inset:0;width:100%;height:100%;border:0;background:var(--bg);padding-top:env(safe-area-inset-top)}
+.splash{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:var(--bg);transition:opacity .35s}
+.splash.hide{opacity:0;pointer-events:none}
+.splash img{width:88px;height:88px;border-radius:24px;box-shadow:0 14px 34px rgba(49,130,246,.35);animation:b 1.4s ease-in-out infinite}
+@keyframes b{50%{transform:scale(.94)}}
+.splash b{font-size:20px;font-weight:800;letter-spacing:-.03em}
+.help{display:none;max-width:340px;margin:10px 24px 0;background:var(--card);border-radius:20px;padding:20px;text-align:center;font-size:15px;line-height:1.6;color:var(--sub)}
+.help.show{display:block}
+.steps{text-align:left;margin:12px 0 4px;padding-left:20px;font-size:14px}
+.steps li{margin:6px 0}
+.steps b{color:var(--tx)}
+.help strong{color:var(--tx)}
+.btn{display:block;width:100%;height:52px;border:0;border-radius:14px;background:var(--blue);color:#fff;font:inherit;font-size:16px;font-weight:700;margin-top:12px;cursor:pointer;text-decoration:none;line-height:52px}
+.btn.sub{background:rgba(127,127,127,.14);color:var(--tx)}
+.install{position:fixed;z-index:6;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));max-width:496px;margin:0 auto;display:none;align-items:center;gap:12px;background:var(--card);border-radius:18px;padding:12px 12px 12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.install.show{display:flex}
+.install img{width:40px;height:40px;border-radius:11px}
+.install .t{flex:1;font-size:14px;line-height:1.4;color:var(--sub)}
+.install .t b{display:block;color:var(--tx);font-size:15px}
+.install button{border:0;border-radius:10px;height:38px;padding:0 14px;font:inherit;font-weight:700;font-size:14px;cursor:pointer}
+.install .go{background:var(--blue);color:#fff}
+.install .x{background:none;color:var(--sub);padding:0 6px}
+</style>
+</head>
+<body>
+<div class="splash" id="sp">
+  <img src="icon-192.png" alt="">
+  <b>나만의 AI비서</b>
+  <div class="help" id="help">
+    <div id="hFirst">
+      <strong>처음 오셨나요? 👋</strong><br>
+      아래 버튼으로 <b>내 구글 계정</b>에서 한 번만 허용하면 돼요.
+      <ol class="steps">
+        <li><b>구글 계정으로 시작하기</b> 누르기 → 초대받은 계정 선택</li>
+        <li><b>‘Google에서 확인하지 않은 앱’</b>이 나오면 <b>고급 → 이동 → 허용</b> (개인이 만든 앱이라 나오는 화면이에요)</li>
+        <li>앱 화면이 뜨면 이 화면으로 돌아와 <b>다시 시도</b></li>
+      </ol>
+    </div>
+    <div id="hErr" style="display:none">
+      <strong>앱을 불러오지 못했어요</strong><br>
+      <ol class="steps">
+        <li><b>구글 계정으로 시작하기</b>를 눌러 앱이 열리는지 확인</li>
+        <li>크롬에 <b>다른 구글 계정도 함께 로그인</b>돼 있으면 → <b>계정 골라서 열기</b></li>
+        <li>열리면 이 화면으로 돌아와 <b>다시 시도</b></li>
+      </ol>
+    </div>
+    <a class="btn" id="login" target="_blank" rel="noopener">구글 계정으로 시작하기</a>
+    <a class="btn sub" id="chooser" target="_blank" rel="noopener">계정 골라서 열기</a>
+    <button class="btn sub" onclick="location.reload()">다시 시도</button>
+  </div>
+</div>
+</div>
+<iframe id="app" title="나만의 AI비서" allow="clipboard-read; clipboard-write; fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe>
+<div class="install" id="inst"><img src="icon-192.png" alt=""><div class="t"><b>앱으로 설치하기</b>홈 화면에서 바로 열려요</div><button class="go" id="instGo">설치</button><button class="x" id="instX" aria-label="닫기">✕</button></div>
+<script>
+const EXEC = 'https://script.google.com/macros/s/AKfycbyJDT9Pw2xnBQTUBynP6hy3KlXuQCH2PFerxEoF52UDOdy3q5ukA3cM3HW14USMDb8L/exec';
+const qs = new URLSearchParams(location.search);
+const src = EXEC + '?shell=1' + (qs.get('action') === 'add' ? '&action=add' : '');
+const app = document.getElementById('app'), sp = document.getElementById('sp');
+document.getElementById('login').href = EXEC;
+document.getElementById('chooser').href = 'https://accounts.google.com/AccountChooser?continue=' + encodeURIComponent(EXEC);
+app.src = src;
+let ready = false, inner = null, armed = false, waiting = false;
+window.addEventListener('popstate', () => { if (!inner) return; waiting = true; inner.postMessage({orbit:'back'}, '*'); setTimeout(() => { if (waiting) { waiting = false; history.pushState({boks:1}, ''); } }, 700); });
+window.addEventListener('message', e => {
+  const d = e.data || {};
+  if (d.orbit === 'ready') { ready = true; try { localStorage.setItem('ai_ready_once', '1'); } catch (e) {} sp.classList.add('hide'); document.getElementById('help').classList.remove('show'); inner = e.source; if (!armed) { history.pushState({boks:1}, ''); armed = true; } }
+  if (d.orbit === 'backResult') { waiting = false; if (d.handled) history.pushState({boks:1}, ''); }
+  if (d.orbit === 'reload') location.reload();
+  if (d.orbit === 'theme' && d.color) document.querySelectorAll('meta[name=theme-color]').forEach(m => m.content = d.color);
+});
+let seen = false; try { seen = localStorage.getItem('ai_ready_once') === '1'; } catch (e) {}
+if (seen) { document.getElementById('hFirst').style.display = 'none'; document.getElementById('hErr').style.display = 'block'; }
+setTimeout(() => { if (!ready) document.getElementById('help').classList.add('show'); }, seen ? 25000 : 6000);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && !ready) location.reload(); });
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+// 설치 안내
+let deferred = null;
+const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+let dismissed = false; try { dismissed = localStorage.getItem('boks_inst_x') === '1'; } catch (e) {}
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; if (!standalone && !dismissed) setTimeout(() => document.getElementById('inst').classList.add('show'), 2500); });
+document.getElementById('instGo').onclick = async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; document.getElementById('inst').classList.remove('show'); };
+document.getElementById('instX').onclick = () => { document.getElementById('inst').classList.remove('show'); try { localStorage.setItem('boks_inst_x', '1'); } catch (e) {} };
+window.addEventListener('appinstalled', () => document.getElementById('inst').classList.remove('show'));
+</script>
+</body>
+</html>
